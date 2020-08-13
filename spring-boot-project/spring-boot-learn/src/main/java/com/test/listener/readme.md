@@ -1,0 +1,2 @@
+ApplicationListener的实现方式和ApplicationContextInitializer类似，但是ApplicationListener还支持实现SmartApplicationListener接口，这样可以处理多种不同类型的事件
+

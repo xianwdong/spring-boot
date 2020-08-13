@@ -1,0 +1,2 @@
+org.springframework.context.ApplicationContextInitializer=com.test.initializer.SecondInitializer
+org.springframework.context.ApplicationListener=com.test.listener.FirstListener,com.test.listener.ThirdListener

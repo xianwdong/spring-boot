@@ -269,7 +269,9 @@ public class SpringApplication {
 		Assert.notNull(primarySources, "PrimarySources must not be null");
 		this.primarySources = new LinkedHashSet<>(Arrays.asList(primarySources));
 		this.webApplicationType = WebApplicationType.deduceFromClasspath();
+		// 设置ApplicationContextInitializer，从所有的META-INF/spring.factories读取
 		setInitializers((Collection) getSpringFactoriesInstances(ApplicationContextInitializer.class));
+		// 设置ApplicationListener，从所有的META-INF/spring.factories读取
 		setListeners((Collection) getSpringFactoriesInstances(ApplicationListener.class));
 		this.mainApplicationClass = deduceMainApplicationClass();
 	}
@@ -367,6 +369,7 @@ public class SpringApplication {
 			SpringApplicationRunListeners listeners, ApplicationArguments applicationArguments, Banner printedBanner) {
 		context.setEnvironment(environment);
 		postProcessApplicationContext(context);
+		// 刷新context之前会调用所有ApplicationContextInitializer的initialize方法
 		applyInitializers(context);
 		listeners.contextPrepared(context);
 		if (this.logStartupInfo) {
@@ -412,6 +415,9 @@ public class SpringApplication {
 
 	private SpringApplicationRunListeners getRunListeners(String[] args) {
 		Class<?>[] types = new Class<?>[] { SpringApplication.class, String[].class };
+		// 这里默认只能获取到EventPublishingRunListener一个类
+		// getSpringFactoriesInstances方法会调用EventPublishingRunListener的构造方法
+		// 构造方法会把SpringApplication的listeners(从spring.factories)中获取的Listener集合都加到Multicast中
 		return new SpringApplicationRunListeners(logger,
 				getSpringFactoriesInstances(SpringApplicationRunListener.class, types, this, args));
 	}
@@ -423,6 +429,9 @@ public class SpringApplication {
 	private <T> Collection<T> getSpringFactoriesInstances(Class<T> type, Class<?>[] parameterTypes, Object... args) {
 		ClassLoader classLoader = getClassLoader();
 		// Use names and ensure unique to protect against duplicates
+		// loadFactoryNames方法会调用loadSpringFactories(classLoader)方法，这个方法会加载当前类路径下所有的spring.factories中的KV
+		// 保存到map中，map的key就是类的全路径名，value是对象
+		// 然后会把这个map再缓存起来，key是ClassLoader，这样可以避免后续重复读取文件
 		Set<String> names = new LinkedHashSet<>(SpringFactoriesLoader.loadFactoryNames(type, classLoader));
 		List<T> instances = createSpringFactoriesInstances(type, parameterTypes, classLoader, args, names);
 		AnnotationAwareOrderComparator.sort(instances);
