@@ -51,6 +51,11 @@ public class DelegatingApplicationListener implements ApplicationListener<Applic
 
 	private SimpleApplicationEventMulticaster multicaster;
 
+	/**
+	 * 这个方法有个小坑，当DelegatingApplicationListener执行时，会先判断当前event是不是ApplicationEnvironmentPreparedEvent
+	 * 对于SecondListener，它如果监听ApplicationStartingEvent，那么它不会被执行
+	 * 它需要监听ApplicationEnvironmentPreparedEvent之后的事件才行
+	 * */
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
 		if (event instanceof ApplicationEnvironmentPreparedEvent) {
