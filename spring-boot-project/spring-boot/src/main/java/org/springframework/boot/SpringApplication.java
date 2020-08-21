@@ -268,11 +268,13 @@ public class SpringApplication {
 		this.resourceLoader = resourceLoader;
 		Assert.notNull(primarySources, "PrimarySources must not be null");
 		this.primarySources = new LinkedHashSet<>(Arrays.asList(primarySources));
+		// 推断ApplicationContext的类型，主要通过有没有引入相应的类来判断
 		this.webApplicationType = WebApplicationType.deduceFromClasspath();
 		// 设置ApplicationContextInitializer，从所有的META-INF/spring.factories读取
 		setInitializers((Collection) getSpringFactoriesInstances(ApplicationContextInitializer.class));
 		// 设置ApplicationListener，从所有的META-INF/spring.factories读取
 		setListeners((Collection) getSpringFactoriesInstances(ApplicationListener.class));
+		// main函数所在类，注意这个类和加了@SpringBootApplication注解的类不一定是同一个类
 		this.mainApplicationClass = deduceMainApplicationClass();
 	}
 

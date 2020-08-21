@@ -16,9 +16,9 @@ public class TestApplication {
 //		springApplication.run(args);
 //	}
 
-	public static void main(String[] args) {
-		SpringApplication springApplication = new SpringApplication(TestApplication.class);
-		springApplication.run(args);
-	}
+//	public static void main(String[] args) {
+//		SpringApplication springApplication = new SpringApplication(TestApplication.class);
+//		springApplication.run(args);
+//	}
 
 }
